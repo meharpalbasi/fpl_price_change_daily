@@ -1,0 +1,45 @@
+name: "FPL Price Change Schedule"
+
+on:
+  schedule:
+    - cron: "30 3 * * *"  # Runs every day at 03:30 UTC
+  # Uncomment if you want to trigger this workflow manually from the Actions tab:
+  # workflow_dispatch:
+
+jobs:
+  run-fpl-script:
+    runs-on: ubuntu-latest
+
+    # Needed if you want to commit changes back to the repo
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: |
+          pip install requests pandas
+      
+      - name: Run FPL script
+        run: |
+          python main.py
+
+      - name: Commit and push changes
+        # This step commits and pushes any file changes (like your updated CSV)
+        # back to GitHub, IF there are changes.
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Daily update: $(date +'%Y-%m-%d')"
+            git push
+          else
+            echo "No changes to commit."
