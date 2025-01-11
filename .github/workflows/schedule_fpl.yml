@@ -2,7 +2,7 @@ name: "FPL Price Change Schedule"
 
 on:
   schedule:
-    - cron: "30 9 * * *"  # Runs every day at 03:30 UTC
+    - cron: "0 23 * * *"  # Runs every day at 03:30 UTC
   # Uncomment if you want to trigger this workflow manually from the Actions tab:
   workflow_dispatch:
 
