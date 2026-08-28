@@ -2,7 +2,12 @@ name: "FPL Price Change Schedule"
 
 on:
   schedule:
-    - cron: "0 23 * * *"  # Runs every day at 03:30 UTC
+    # 20:30 UTC: FPL applies price changes ~01:30-02:45 UTC, and GitHub
+    # scheduled runs can drift by several hours (observed: a "23:00" cron
+    # actually running at 04:07 and 06:24 — AFTER the change window, so the
+    # "yesterday" snapshot equalled today's prices and the site showed zero
+    # overnight changes all season). 20:30 leaves ~5h of drift headroom.
+    - cron: "30 20 * * *"
   # Uncomment if you want to trigger this workflow manually from the Actions tab:
   workflow_dispatch:
 
